@@ -7,12 +7,12 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import Link from "next/link";
 
-export const ListDoctors = () => {
-  const [doctors, setDoctors] = useState([]);
+export const ListManagedPatients = () => {
+  const [patients, setPatients] = useState([]);
   const [search, setSearch] = useState("");
   const fetchData = async (searchString) => {
     const response = await fetch(
-      `/api/get-doctors-api?name=${searchString}&email=${searchString}`,
+      `/api/get-manage-patients?name=${searchString}&email=${searchString}`,
       {
         method: "GET",
         headers: {
@@ -23,10 +23,10 @@ export const ListDoctors = () => {
     const results = await response.json();
 
     if (response.ok) {
-      setDoctors(results.doctors);
+      setPatients(results.patients);
     } else {
       console.log(results.error);
-      console.log("Get Doctors failed.");
+      console.log("Get patients failed.");
     }
   };
 
@@ -39,19 +39,19 @@ export const ListDoctors = () => {
   //   fetchDataCallback(); // Call the memoized function within useEffect
   // }, [fetchDataCallback]);
 
-  const deleteDoctorItem = async (name: string) => {
-    const response = await fetch(`/api/delete-doctor-api/?name=${name}`, {
+  const deleteCategoryItem = async (id, pictureFilePath) => {
+    const response = await fetch(`/api/category-delete-api/?id=${id}`, {
       method: "DELETE",
     });
     const results = await response.json();
     if (response.ok) {
       // const parts = pictureFilePath.split("/");
       // const filename = parts[parts.length - 1];
-      fetchDataCallback("");
+      fetchData();
       // const key = `Category/${filename}`;
       // s3DeleteHandler(key);
     } else {
-      console.log("Delete Doctor Items failed.");
+      console.log("Delete Category Items failed.");
       console.log("err: " + results.error);
     }
   };
@@ -67,7 +67,7 @@ export const ListDoctors = () => {
       <StrictMode>
         <div className="main-content">
           <div className="card-header">
-            <h4>Doctors</h4>
+            <h4>Managed Patients</h4>
             {/* <div className="card-header-form"> */}
             {/* <form action="" method="post" onSubmit={handle}>
               <div className="input-group">
@@ -109,14 +109,12 @@ export const ListDoctors = () => {
                     <th>Address</th>
                     <th>Phone</th>
                     <th>Identity Card</th>
-                    <th>Department</th>
-                    <th>Specialization</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {doctors.length > 0 &&
-                    doctors?.map((item) => (
+                  {patients.length > 0 &&
+                    patients?.map((item) => (
                       <tr key={item.identity}>
                         <td>{item.name}</td>
                         <td>{item.age}</td>
@@ -124,13 +122,15 @@ export const ListDoctors = () => {
                         <td>{item.address}</td>
                         <td>{item.phone}</td>
                         <td>{item.identity_card}</td>
-                        <td>{item.department}</td>
-                        <td>{item.specialization}</td>
                         <td>
                           <DeleteIcon
-                            onClick={() => deleteDoctorItem(item.name)}
+                            onClick={() =>
+                              deleteCategoryItem(item._id, item.picture)
+                            }
                           />
-                          <Link href={`doctors/edit?name=${item.name}`}>
+                          <Link
+                            href={`treatment?patientName=${item.name}&doctorName=${item.doctor_name}`}
+                          >
                             <EditIcon />
                           </Link>
                         </td>

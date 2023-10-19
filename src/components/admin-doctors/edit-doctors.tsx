@@ -1,61 +1,60 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "quill/dist/quill.snow.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FormCheck } from "react-bootstrap";
-import { useForm } from "react-hook-form";
 import DoneIcon from "@mui/icons-material/Done";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import "react-quill/dist/quill.snow.css";
-import dynamic from "next/dynamic";
-
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-const modules = {
-  toolbar: [
-    [{ header: "1" }, { header: "2" }, { font: [] }],
-    [{ size: [] }],
-    ["bold", "italic", "underline", "strike", "blockquote"],
-    [
-      { list: "ordered" },
-      { list: "bullet" },
-      { indent: "-1" },
-      { indent: "+1" },
-    ],
-    ["link", "image", "video"],
-    ["clean"],
-  ],
-  clipboard: {
-    // toggle to add extra line breaks when pasting HTML:
-    matchVisual: false,
-  },
-};
-/*
- * Quill editor formats
- * See https://quilljs.com/docs/formats/
- */
-const formats = [
-  "header",
-  "font",
-  "size",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "list",
-  "bullet",
-  "indent",
-  "link",
-  "image",
-  "video",
-];
-
-export const AddDoctors = () => {
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
+export const EditDoctors = () => {
   const [isCreated, setIsCreated] = useState(Boolean);
-  const [doctorFormState, setDoctorFormState] = useState({});
-  const { register, handleSubmit } = useForm();
-  const [error, setError] = useState(null);
+  const [patients, setPatients] = useState([]);
+  const [selectedPatients, setSelectedPatients] = useState([]);
 
+  const [search, setSearch] = useState("");
+  const [error, setError] = useState(null);
+  const { register, handleSubmit } = useForm();
+  const router = useRouter();
+  const { name } = router.query;
+  const [doctorFormState, setDoctorFormState] = useState({});
+
+  const fetchData = async (searchString) => {
+    const response = await fetch(
+      `/api/get-patients-by-name-api?name=${searchString}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const results = await response.json();
+
+    if (response.ok) {
+      setPatients(results.patients);
+    } else {
+      console.log(results.error);
+      console.log("Get Patients failed.");
+    }
+  };
+
+  const fetchDataCallback = useCallback(
+    (searchString) => fetchData(searchString),
+    []
+  );
+  const handleInputChange = (event, newInputValue) => {
+    fetchDataCallback(newInputValue);
+  };
+  const handlePatientSelection = (event, newValue) => {
+    setSelectedPatients(newValue);
+  };
+  const selectedPatientNames = selectedPatients
+    .map((patient) => patient.name)
+    .join(", ");
   const doctorFormHandleChange = (e) => {
     setDoctorFormState({
       ...doctorFormState,
@@ -66,69 +65,52 @@ export const AddDoctors = () => {
   const doctorFormOnSubmit = async (e) => {
     const event = e || window.event;
     const {
-      name,
-      age,
-      email,
-      address,
-      phone,
-      identity_card,
-      department,
-      specialization,
+      diagnosis,
+      instruction,
+      treatment_cost,
+      meeting_time,
+      next_treatment_date,
     } = doctorFormState;
 
-    if (!name) {
+    if (!diagnosis) {
       // Display an error message
-      alert("Please fill name");
+      alert("Please fill Diagnosis");
       return;
     }
 
-    if (!parseInt(age)) {
+    if (!next_treatment_date) {
       // Display an error message
-      alert("Please fill age");
+      alert("Please fill next treatment date");
       return;
     }
 
-    if (!email) {
+    if (!parseInt(treatment_cost)) {
       // Display an error message
-      alert("Please fill email");
+      alert("Please fill Treatment Cost");
       return;
     }
 
-    if (!address) {
+    if (!parseInt(meeting_time)) {
       // Display an error message
-      alert("Please fill Address");
+      alert("Please fill Meeting Time");
       return;
     }
 
-    if (!phone) {
+    if (!instruction) {
       // Display an error message
-      alert("Please fill Phone");
-      return;
-    }
-
-    if (!identity_card) {
-      // Display an error message
-      alert("Please fill Identity Card");
-      return;
-    }
-
-    if (!department) {
-      // Display an error message
-      alert("Please fill Department");
-      return;
-    }
-
-    if (!specialization) {
-      // Display an error message
-      alert("Please fill Specialization");
+      alert("Please fill Instruction");
       return;
     }
 
     // Submit the form
     // Do something with the form data
-    const response = await fetch("/api/add-doctor-api", {
+    const response = await fetch("/api/match-doctor-to-patient-api", {
       method: "POST",
-      body: JSON.stringify(doctorFormState),
+      body: JSON.stringify({
+        namesParam: selectedPatientNames,
+        name: name,
+        doctorFormState,
+      }),
       headers: {
         "Content-Type": "application/json",
       },
@@ -138,12 +120,13 @@ export const AddDoctors = () => {
       setIsCreated(true);
     } else {
       setIsCreated(false);
-      console.log("Create Doctor failed.");
+      console.log("Match Doctor to Patient failed.");
     }
 
     if (event instanceof Event) {
       event.preventDefault();
     }
+
     // Do something with the form data
   };
 
@@ -156,119 +139,102 @@ export const AddDoctors = () => {
               <div className="col-12">
                 <div className="card">
                   <div className="card-header">
-                    <h4>Add Doctor</h4>
+                    <h4>Doctors Manage Patients</h4>
                   </div>
                   <div className="card-body">
                     <form onSubmit={handleSubmit(doctorFormOnSubmit)}>
                       <div className="form-group row mb-4">
                         <label className="col-form-label text-md-right col-12 col-md-2 col-lg-2 align-items-center d-flex">
-                          Doctor Name
+                          Patient Names
+                        </label>
+                        <div className="col-sm-12 col-md-9">
+                          <Stack spacing={3} sx={{ width: 500 }}>
+                            <Autocomplete
+                              multiple
+                              id="tags-standard"
+                              value={selectedPatients}
+                              options={patients}
+                              getOptionLabel={(patient) => patient.name}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  variant="standard"
+                                  label="Multiple values"
+                                  placeholder="Favorites"
+                                />
+                              )}
+                              onChange={handlePatientSelection}
+                              onInputChange={handleInputChange}
+                            />
+                          </Stack>
+                        </div>
+                      </div>
+                      <div className="form-group row mb-4">
+                        <label className="col-form-label text-md-right col-12 col-md-2 col-lg-2 align-items-center d-flex">
+                          Diagnosis
                         </label>
                         <div className="col-sm-12 col-md-9">
                           <input
                             type="text"
                             className="form-control"
-                            name="name"
-                            value={doctorFormState.name}
+                            name="diagnosis"
+                            value={doctorFormState.diagnosis}
                             onChange={doctorFormHandleChange}
                           />
                         </div>
                       </div>
-
                       <div className="form-group row mb-4">
                         <label className="col-form-label text-md-right col-12 col-md-2 col-lg-2 align-items-center d-flex">
-                          Age
+                          Instruction
                         </label>
-                        <div className="col-sm-12 col-md-9 ">
+                        <div className="col-sm-12 col-md-9">
+                          <input
+                            type="text"
+                            className="form-control"
+                            name="instruction"
+                            value={doctorFormState.instruction}
+                            onChange={doctorFormHandleChange}
+                          />
+                        </div>
+                      </div>
+                      <div className="form-group row mb-4">
+                        <label className="col-form-label text-md-right col-12 col-md-2 col-lg-2 align-items-center d-flex">
+                          Treatment Cost
+                        </label>
+                        <div className="col-sm-12 col-md-9">
                           <input
                             type="number"
                             className="form-control"
-                            name="age"
-                            value={doctorFormState.age}
+                            name="treatment_cost"
+                            value={doctorFormState.treatment_cost}
                             onChange={doctorFormHandleChange}
                           />
                         </div>
                       </div>
                       <div className="form-group row mb-4">
                         <label className="col-form-label text-md-right col-12 col-md-2 col-lg-2 align-items-center d-flex">
-                          Email
+                          Meeting Time
                         </label>
                         <div className="col-sm-12 col-md-9">
                           <input
-                            type="text"
+                            type="number"
                             className="form-control"
-                            name="email"
-                            value={doctorFormState.email}
+                            name="meeting_time"
+                            value={doctorFormState.meeting_time}
                             onChange={doctorFormHandleChange}
                           />
                         </div>
                       </div>
                       <div className="form-group row mb-4">
                         <label className="col-form-label text-md-right col-12 col-md-2 col-lg-2 align-items-center d-flex">
-                          Address
+                          Next Treatment Date
                         </label>
                         <div className="col-sm-12 col-md-9">
                           <input
-                            type="text"
+                            type="date"
                             className="form-control"
-                            name="address"
-                            value={doctorFormState.address}
-                            onChange={doctorFormHandleChange}
-                          />
-                        </div>
-                      </div>
-                      <div className="form-group row mb-4">
-                        <label className="col-form-label text-md-right col-12 col-md-2 col-lg-2 align-items-center d-flex">
-                          Phone
-                        </label>
-                        <div className="col-sm-12 col-md-9">
-                          <input
-                            type="text"
-                            className="form-control"
-                            name="phone"
-                            value={doctorFormState.phone}
-                            onChange={doctorFormHandleChange}
-                          />
-                        </div>
-                      </div>
-                      <div className="form-group row mb-4">
-                        <label className="col-form-label text-md-right col-12 col-md-2 col-lg-2 align-items-center d-flex">
-                          Identity Card
-                        </label>
-                        <div className="col-sm-12 col-md-9">
-                          <input
-                            type="text"
-                            className="form-control"
-                            name="identity_card"
-                            value={doctorFormState.identity_card}
-                            onChange={doctorFormHandleChange}
-                          />
-                        </div>
-                      </div>
-                      <div className="form-group row mb-4">
-                        <label className="col-form-label text-md-right col-12 col-md-2 col-lg-2 align-items-center d-flex">
-                          Department
-                        </label>
-                        <div className="col-sm-12 col-md-9">
-                          <input
-                            type="text"
-                            className="form-control"
-                            name="department"
-                            value={doctorFormState.department}
-                            onChange={doctorFormHandleChange}
-                          />
-                        </div>
-                      </div>
-                      <div className="form-group row mb-4">
-                        <label className="col-form-label text-md-right col-12 col-md-2 col-lg-2 align-items-center d-flex">
-                          Specialization
-                        </label>
-                        <div className="col-sm-12 col-md-9">
-                          <input
-                            type="text"
-                            className="form-control"
-                            name="specialization"
-                            value={doctorFormState.specialization}
+                            name="next_treatment_date"
+                            value={doctorFormState.next_treatment_date}
                             onChange={doctorFormHandleChange}
                           />
                         </div>

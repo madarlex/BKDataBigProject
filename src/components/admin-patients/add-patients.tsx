@@ -50,31 +50,23 @@ const formats = [
   "video",
 ];
 
-export const AddDoctors = () => {
+export const AddPatients = () => {
   const [isCreated, setIsCreated] = useState(Boolean);
-  const [doctorFormState, setDoctorFormState] = useState({});
+  const [patientFormState, setPatientFormState] = useState({});
   const { register, handleSubmit } = useForm();
   const [error, setError] = useState(null);
 
-  const doctorFormHandleChange = (e) => {
-    setDoctorFormState({
-      ...doctorFormState,
+  const patientFormHandleChange = (e) => {
+    setPatientFormState({
+      ...patientFormState,
       [e.target.name]: e.target.value,
     });
   };
 
-  const doctorFormOnSubmit = async (e) => {
+  const patientFormOnSubmit = async (e) => {
     const event = e || window.event;
-    const {
-      name,
-      age,
-      email,
-      address,
-      phone,
-      identity_card,
-      department,
-      specialization,
-    } = doctorFormState;
+    const { name, age, email, address, phone, identity_card } =
+      patientFormState;
 
     if (!name) {
       // Display an error message
@@ -112,23 +104,11 @@ export const AddDoctors = () => {
       return;
     }
 
-    if (!department) {
-      // Display an error message
-      alert("Please fill Department");
-      return;
-    }
-
-    if (!specialization) {
-      // Display an error message
-      alert("Please fill Specialization");
-      return;
-    }
-
     // Submit the form
     // Do something with the form data
-    const response = await fetch("/api/add-doctor-api", {
+    const response = await fetch("/api/add-patient-api", {
       method: "POST",
-      body: JSON.stringify(doctorFormState),
+      body: JSON.stringify(patientFormState),
       headers: {
         "Content-Type": "application/json",
       },
@@ -156,21 +136,21 @@ export const AddDoctors = () => {
               <div className="col-12">
                 <div className="card">
                   <div className="card-header">
-                    <h4>Add Doctor</h4>
+                    <h4>Add Patient</h4>
                   </div>
                   <div className="card-body">
-                    <form onSubmit={handleSubmit(doctorFormOnSubmit)}>
+                    <form onSubmit={handleSubmit(patientFormOnSubmit)}>
                       <div className="form-group row mb-4">
                         <label className="col-form-label text-md-right col-12 col-md-2 col-lg-2 align-items-center d-flex">
-                          Doctor Name
+                          Patient Name
                         </label>
                         <div className="col-sm-12 col-md-9">
                           <input
                             type="text"
                             className="form-control"
                             name="name"
-                            value={doctorFormState.name}
-                            onChange={doctorFormHandleChange}
+                            value={patientFormState.name}
+                            onChange={patientFormHandleChange}
                           />
                         </div>
                       </div>
@@ -184,8 +164,8 @@ export const AddDoctors = () => {
                             type="number"
                             className="form-control"
                             name="age"
-                            value={doctorFormState.age}
-                            onChange={doctorFormHandleChange}
+                            value={patientFormState.age}
+                            onChange={patientFormHandleChange}
                           />
                         </div>
                       </div>
@@ -198,8 +178,8 @@ export const AddDoctors = () => {
                             type="text"
                             className="form-control"
                             name="email"
-                            value={doctorFormState.email}
-                            onChange={doctorFormHandleChange}
+                            value={patientFormState.email}
+                            onChange={patientFormHandleChange}
                           />
                         </div>
                       </div>
@@ -212,8 +192,8 @@ export const AddDoctors = () => {
                             type="text"
                             className="form-control"
                             name="address"
-                            value={doctorFormState.address}
-                            onChange={doctorFormHandleChange}
+                            value={patientFormState.address}
+                            onChange={patientFormHandleChange}
                           />
                         </div>
                       </div>
@@ -226,8 +206,8 @@ export const AddDoctors = () => {
                             type="text"
                             className="form-control"
                             name="phone"
-                            value={doctorFormState.phone}
-                            onChange={doctorFormHandleChange}
+                            value={patientFormState.phone}
+                            onChange={patientFormHandleChange}
                           />
                         </div>
                       </div>
@@ -240,39 +220,12 @@ export const AddDoctors = () => {
                             type="text"
                             className="form-control"
                             name="identity_card"
-                            value={doctorFormState.identity_card}
-                            onChange={doctorFormHandleChange}
+                            value={patientFormState.identity_card}
+                            onChange={patientFormHandleChange}
                           />
                         </div>
                       </div>
-                      <div className="form-group row mb-4">
-                        <label className="col-form-label text-md-right col-12 col-md-2 col-lg-2 align-items-center d-flex">
-                          Department
-                        </label>
-                        <div className="col-sm-12 col-md-9">
-                          <input
-                            type="text"
-                            className="form-control"
-                            name="department"
-                            value={doctorFormState.department}
-                            onChange={doctorFormHandleChange}
-                          />
-                        </div>
-                      </div>
-                      <div className="form-group row mb-4">
-                        <label className="col-form-label text-md-right col-12 col-md-2 col-lg-2 align-items-center d-flex">
-                          Specialization
-                        </label>
-                        <div className="col-sm-12 col-md-9">
-                          <input
-                            type="text"
-                            className="form-control"
-                            name="specialization"
-                            value={doctorFormState.specialization}
-                            onChange={doctorFormHandleChange}
-                          />
-                        </div>
-                      </div>
+
                       <div className="form-group row mb-4 ">
                         <label className="col-form-label text-md-right col-12 col-md-2 col-lg-2"></label>
                         <div

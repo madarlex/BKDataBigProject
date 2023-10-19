@@ -6,13 +6,17 @@ import EditIcon from "@mui/icons-material/Edit";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-export const ListDoctors = () => {
-  const [doctors, setDoctors] = useState([]);
+export const ListTreatmentDetail = () => {
+  const [treatments, setTreatment] = useState([]);
   const [search, setSearch] = useState("");
-  const fetchData = async (searchString) => {
+  const router = useRouter();
+  const { patientName, doctorName } = router.query;
+  console.log("1", treatments);
+  const fetchData = async (doctorName, patientName) => {
     const response = await fetch(
-      `/api/get-doctors-api?name=${searchString}&email=${searchString}`,
+      `/api/get-treatment?doctorName=${doctorName}&patientName=${patientName}`,
       {
         method: "GET",
         headers: {
@@ -23,35 +27,35 @@ export const ListDoctors = () => {
     const results = await response.json();
 
     if (response.ok) {
-      setDoctors(results.doctors);
+      setTreatment(results.treatments);
     } else {
       console.log(results.error);
-      console.log("Get Doctors failed.");
+      console.log("Get treatments failed.");
     }
   };
 
-  const fetchDataCallback = useCallback(
-    (searchString) => fetchData(searchString),
-    []
-  ); // Memoize the fetchData function
+  //   const fetchDataCallback = useCallback(
+  //     (doctorName, patientName) => fetchData(doctorName, patientName),
+  //     []
+  //   ); // Memoize the fetchData function
 
-  // useEffect(() => {
-  //   fetchDataCallback(); // Call the memoized function within useEffect
-  // }, [fetchDataCallback]);
+  useEffect(() => {
+    fetchData(doctorName, patientName); // Call the memoized function within useEffect
+  }, [doctorName, patientName]);
 
-  const deleteDoctorItem = async (name: string) => {
-    const response = await fetch(`/api/delete-doctor-api/?name=${name}`, {
+  const deleteCategoryItem = async (id, pictureFilePath) => {
+    const response = await fetch(`/api/category-delete-api/?id=${id}`, {
       method: "DELETE",
     });
     const results = await response.json();
     if (response.ok) {
       // const parts = pictureFilePath.split("/");
       // const filename = parts[parts.length - 1];
-      fetchDataCallback("");
+      fetchData();
       // const key = `Category/${filename}`;
       // s3DeleteHandler(key);
     } else {
-      console.log("Delete Doctor Items failed.");
+      console.log("Delete Category Items failed.");
       console.log("err: " + results.error);
     }
   };
@@ -67,7 +71,7 @@ export const ListDoctors = () => {
       <StrictMode>
         <div className="main-content">
           <div className="card-header">
-            <h4>Doctors</h4>
+            <h4>Treatment</h4>
             {/* <div className="card-header-form"> */}
             {/* <form action="" method="post" onSubmit={handle}>
               <div className="input-group">
@@ -89,48 +93,41 @@ export const ListDoctors = () => {
             <button className="btn btn-primary">View All</button>
           </a> */}
           </div>
-          <div>
-            <input
-              type="search"
-              className="form-control"
-              name="search"
-              value={search}
-              onChange={handleSearchChange}
-            />
-          </div>
           <div className="card-body p-0">
             <div className="table-responsive">
               <table className="table table-striped table-md">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Email</th>
-                    <th>Address</th>
-                    <th>Phone</th>
-                    <th>Identity Card</th>
-                    <th>Department</th>
-                    <th>Specialization</th>
+                    <th>Meeting Time</th>
+                    <th>Diagnosis</th>
+                    <th>Instruction</th>
+                    <th>Treatment Cost</th>
+                    <th>Last Treatment Date</th>
+                    <th>Started Treatment Date</th>
+                    <th>Next Treatment Date</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {doctors.length > 0 &&
-                    doctors?.map((item) => (
+                  {treatments.length > 0 &&
+                    treatments?.map((item) => (
                       <tr key={item.identity}>
-                        <td>{item.name}</td>
-                        <td>{item.age}</td>
-                        <td>{item.email}</td>
-                        <td>{item.address}</td>
-                        <td>{item.phone}</td>
-                        <td>{item.identity_card}</td>
-                        <td>{item.department}</td>
-                        <td>{item.specialization}</td>
+                        <td>{item.meeting_time}</td>
+                        <td>{item.diagnosis}</td>
+                        <td>{item.instruction}</td>
+                        <td>{item.treatment_cost}</td>
+                        <td>{item.last_treatment_date}</td>
+                        <td>{item.started_treatment_date}</td>
+                        <td>{item.next_treatment_date}</td>
                         <td>
                           <DeleteIcon
-                            onClick={() => deleteDoctorItem(item.name)}
+                            onClick={() =>
+                              deleteCategoryItem(item._id, item.picture)
+                            }
                           />
-                          <Link href={`doctors/edit?name=${item.name}`}>
+                          <Link
+                            href={`doctors/treament?patientName=${item.name}&doctorName=${item.doctor_name}`}
+                          >
                             <EditIcon />
                           </Link>
                         </td>
