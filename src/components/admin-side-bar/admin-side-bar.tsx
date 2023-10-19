@@ -9,11 +9,16 @@ export const AdminSideBar = () => {
 
   const patientOptions = [
     { id: 1, label: "Patients", route: "/admin/patients" },
-    { id: 2, label: "Add Patient", route: "/admin/product/add" },
+    { id: 2, label: "Add Patient", route: "/admin/patients/add" },
   ];
   const doctorOptions = [
     { id: 1, label: "Doctors", route: "/admin/doctors" },
     { id: 2, label: "Add Doctor", route: "/admin/doctors/add" },
+    {
+      id: 3,
+      label: "Manage Patients",
+      route: "/admin/doctors/manage-patients",
+    },
   ];
 
   const prescriptionOptions = [

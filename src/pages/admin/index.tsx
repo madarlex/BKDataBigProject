@@ -9,8 +9,7 @@ export default function Admin() {
         <meta name="description" content="Ogani Template" />
         <meta name="keywords" content="Ogani, unica, creative, html" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
-        <title>Ogani | Template</title>
+        <title>BK | Data</title>
         <meta charSet="UTF-8" />
       </Head>
       <main>
