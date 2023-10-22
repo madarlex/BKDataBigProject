@@ -21,7 +21,7 @@ async function addDoctor(
 
   try {
     const result = await session.run(
-      "CREATE (doctor:Doctor {name: $name, age: $age, email: $email, address: $address, phone: $phone, identity_card: $identity_card, department: $department, specialization: $specialization}) RETURN doctor",
+      "CREATE (doctor:Doctor {name: $name, age: toInteger($age), email: $email, address: $address, phone: $phone, identity_card: $identity_card, department: $department, specialization: $specialization}) RETURN doctor",
       {
         name,
         age,

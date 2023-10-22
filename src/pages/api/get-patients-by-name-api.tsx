@@ -22,6 +22,9 @@ async function fetchPatientsByName(name: string) {
       const properties = record.get("patient").properties;
       const identity = record.get("patient").identity;
       const actualIdentity = identity.low + identity.high * 0x100000000;
+      const patientAge = properties.age.low;
+
+      properties.age = patientAge;
       return {
         ...properties, // Include the properties
         identity: actualIdentity, // Include the elementId
