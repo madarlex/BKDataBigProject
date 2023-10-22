@@ -1,0 +1,1 @@
+CREATE (admin:Neo4JAdmin {username: 'admin', password: '12345678'});

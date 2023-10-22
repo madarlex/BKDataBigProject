@@ -4,6 +4,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { DropdownButton, Dropdown } from "react-bootstrap";
 import { useRouter } from "next/router";
 
+import Button from "@mui/material/Button";
+
 export const AdminSideBar = () => {
   const router = useRouter();
 
@@ -44,6 +46,21 @@ export const AdminSideBar = () => {
   function handleHeroBannerItemClick(route) {
     router.push(route);
   }
+
+  const handleLogout = async () => {
+    const response = await fetch("/api/log-out-api", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      router.push("/login"); // Redirect to the logout page.
+    } else {
+      router.push("/admin");
+    }
+  };
+
   return (
     <React.Fragment>
       <div className="main-sidebar sidebar-style-2">
@@ -110,6 +127,11 @@ export const AdminSideBar = () => {
               </Dropdown.Item>
             ))}
           </DropdownButton>
+        </div>
+        <div className="absolute bottom-10 text-center w-full">
+          <Button variant="text" onClick={handleLogout}>
+            Log Out
+          </Button>
         </div>
       </div>
     </React.Fragment>

@@ -3,8 +3,6 @@ import React, { useState, useEffect, StrictMode, useCallback } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import Link from "next/link";
 
 export const ListManagedPatients = () => {
@@ -35,21 +33,13 @@ export const ListManagedPatients = () => {
     []
   ); // Memoize the fetchData function
 
-  // useEffect(() => {
-  //   fetchDataCallback(); // Call the memoized function within useEffect
-  // }, [fetchDataCallback]);
-
   const deleteCategoryItem = async (id, pictureFilePath) => {
     const response = await fetch(`/api/category-delete-api/?id=${id}`, {
       method: "DELETE",
     });
     const results = await response.json();
     if (response.ok) {
-      // const parts = pictureFilePath.split("/");
-      // const filename = parts[parts.length - 1];
       fetchData();
-      // const key = `Category/${filename}`;
-      // s3DeleteHandler(key);
     } else {
       console.log("Delete Category Items failed.");
       console.log("err: " + results.error);
@@ -68,26 +58,6 @@ export const ListManagedPatients = () => {
         <div className="main-content">
           <div className="card-header">
             <h4>Managed Patients</h4>
-            {/* <div className="card-header-form"> */}
-            {/* <form action="" method="post" onSubmit={handle}>
-              <div className="input-group">
-                <input
-                  type="text"
-                  className="form-control"
-                  name="keyword"
-                  placeholder="Search"
-                />
-                <div className="input-group-btn">
-                  <button className="btn btn-primary" type="submit">
-                    <i className="fas fa-search"></i>
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-          <a href="s" style={{ marginLeft: `10px` }}>
-            <button className="btn btn-primary">View All</button>
-          </a> */}
           </div>
           <div>
             <input

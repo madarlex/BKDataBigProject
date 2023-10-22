@@ -23,12 +23,14 @@ async function fetchDoctorsByNameOrEmail(name: string, email: string) {
       const properties = record.get("doctor").properties;
       const identity = record.get("doctor").identity;
       const actualIdentity = identity.low + identity.high * 0x100000000;
+      const doctorAge = properties.age.low;
+
+      properties.age = doctorAge;
       return {
         ...properties, // Include the properties
         identity: actualIdentity, // Include the elementId
       };
     });
-    console.log("1", doctors);
     return doctors;
   } finally {
     await session.close();
