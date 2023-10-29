@@ -1,42 +1,53 @@
-# BKDataBigProject
+# BK Neo4J Big Data Project
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Overview
 
-## Getting Started
+This project involves setting up a Neo4J database, creating a Node.js application using Next.js, and implementing various features for managing patients and doctors in the system.
 
-First, run the development server:
+## Setup Infrastructure
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Neo4J Database Setup
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Download Neo4J for Desktop.
+2. Set up the database and admin role.
+3. Download Node.js 18.
+4. Go to the "resources/data" folder.
+5. Copy the "patients_0.csv" to "patients_10.csv" and "doctors.csv" to the Neo4J Desktop Folder Destination. The destination folder may vary depending on your OS.
+6. Open Neo4j Desktop, run the database, and then access Neo4J Browser.
+7. In the resource folder, open the "create_query.cypher" file, copy and paste the import code, and run it in Neo4J Browser.
+8. Import all patients from 0 to 10 and doctors into the database.
+9. In the resource folder, open the "create_admin.cypher" file, copy and paste the import code, and run it in Neo4J Browser to create the admin account.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Setting up Next.js Project
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+1. Open a terminal and clone the project repository: `git clone https://github.com/madarlex/BKDataBigProject.git`
+2. Use your preferred IDE to open the cloned project folder.
+3. Install project dependencies by running: `npm install`
+4. Install the Yarn package globally: `npm install -g yarn`
+5. Start the development server by running: `yarn dev`
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Application Features
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. Go to the path: `/login` to log in.
+2. Use the following login credentials:
+   - Username: admin
+   - Password: 12345678
+3. If login is successful, you will be redirected to the `/admin` page.
+4. On the sidebar, you will find three categories, but only "Patients" and "Doctors" have been implemented.
+5. For Doctors:
+   - Create doctors.
+   - Search for doctors by name or email.
+   - Add treatment relationships by linking multiple patients to doctors.
+   - Search for managed patients to view their treatment.
+   - Delete a doctor.
+6. For Patients:
+   - Create patients.
+   - Search for patients by name or email.
+   - Delete a patient.
 
-## Learn More
+Feel free to explore and use these features for managing patients and doctors in the application.
 
-To learn more about Next.js, take a look at the following resources:
+## Author
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. Nguyen Minh Thanh
+2. Vu Huynh
