@@ -12,7 +12,7 @@ async function fetchManagePatients(name: string, email: string) {
 
   try {
     const result = await session.run(
-      "MATCH (doctor:Doctor)-[r:Treatment]-(patient:Patient) WHERE doctor.name =~ '(?i).*' + $name + '.*' OR doctor.email =~ '(?i).*' + $email + '.*' RETURN patient, doctor",
+      "MATCH (doctor:Doctor)-[r:Treatment]-(patient:Patient) WHERE doctor.name =~ '(?i).*' + $name + '.*' OR doctor.email =~ '(?i).*' + $email + '.*' RETURN patient, doctor limit 30",
       {
         name,
         email,

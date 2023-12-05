@@ -12,7 +12,7 @@ async function fetchDoctorsByNameOrEmail(name: string, email: string) {
 
   try {
     const result = await session.run(
-      "MATCH (doctor:Doctor) WHERE doctor.name =~ '(?i).*' + $name + '.*' OR doctor.email =~ '(?i).*' + $email + '.*' RETURN doctor",
+      "MATCH (doctor:Doctor) WHERE doctor.name =~ '(?i).*' + $name + '.*' OR doctor.email =~ '(?i).*' + $email + '.*' RETURN doctor limit 30",
       {
         name,
         email,

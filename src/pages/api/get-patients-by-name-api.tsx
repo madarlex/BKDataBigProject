@@ -12,7 +12,7 @@ async function fetchPatientsByName(name: string) {
 
   try {
     const result = await session.run(
-      "MATCH (patient:Patient) WHERE patient.name =~ '(?i).*' + $name + '.*' RETURN patient",
+      "MATCH (patient:Patient) WHERE patient.name =~ '(?i).*' + $name + '.*' RETURN patient limit 10",
       {
         name,
       }

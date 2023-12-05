@@ -14,9 +14,10 @@ This project involves setting up a Neo4J database, creating a Node.js applicatio
 4. Go to the "resources/data" folder.
 5. Copy the "patients_0.csv" to "patients_10.csv" and "doctors.csv" to the Neo4J Desktop Folder Destination. The destination folder may vary depending on your OS.
 6. Open Neo4j Desktop, run the database, and then access Neo4J Browser.
-7. In the resource folder, open the "create_query.cypher" file, copy and paste the import code, and run it in Neo4J Browser.
-8. Import all patients from 0 to 10 and doctors into the database.
-9. In the resource folder, open the "create_admin.cypher" file, copy and paste the import code, and run it in Neo4J Browser to create the admin account.
+7. In Neo4J Desktop interface, accesss terminal, and cd to bin if you are in window, in macos no need.
+8. Then run these command to bulk insert into db: bin/neo4j-admin database import full --nodes=import/doctors.csv --nodes=import/patients_0.csv --nodes=import/patients_1.csv --nodes=import/patients_2.csv --nodes=import/patients_3.csv --nodes=import/patients_4.csv neo4j --overwrite-destination
+9. Import patients from 0 to 10 and doctors into the database depend on your demands.
+10. In the resource folder, open the "create_admin.cypher" file, copy and paste the import code, and run it in Neo4J Browser to create the admin account.
 
 ### Setting up Next.js Project
 
